@@ -10,7 +10,6 @@
 #     return 'Hello from Flask!'
 
 from flask import Flask,render_template, request
-from line-bot import app
 import pred
 app = Flask(__name__)
 
