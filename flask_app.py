@@ -10,8 +10,8 @@
 #     return 'Hello from Flask!'
 
 from flask import Flask,render_template, request
-# from prestock import app
-from prestock import pred
+# from line-bot import app
+from line-bot import pred
 app = Flask(__name__)
 
 @app.route('/')

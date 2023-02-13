@@ -1,6 +1,6 @@
 from flask import render_template, request 
-from prestock import app
-from prestock import pred
+from line-bot import app
+from line-bot import pred
 
 
 @app.route('/')

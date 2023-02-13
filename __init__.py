@@ -1,6 +1,6 @@
 from flask import Flask
 
 app = Flask(__name__)
-app.config.from_object('prestock.config') # 追加
+app.config.from_object('line-bot.config') # 追加
 
-import prestock.views
+import line-bot.views
