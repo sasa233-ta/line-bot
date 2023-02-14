@@ -1,14 +1,3 @@
-
-# # A very simple Flask Hello World app for you to get started with...
-
-# from flask import Flask
-
-# app = Flask(__name__)
-
-# @app.route('/')
-# def hello_world():
-#     return 'Hello from Flask!'
-
 from flask import Flask,render_template, request
 import pred
 app = Flask(__name__)
@@ -30,3 +19,6 @@ def sample_form():
         print('POSTデータ受け取ったので処理します。')
         message = pred.predict(request.form['data1'])
         return f'POST受け取ったよ: {message}'
+
+if __name__ == "__main__":
+    app.run(debug=True)
