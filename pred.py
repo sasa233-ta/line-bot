@@ -22,7 +22,7 @@ def predict(code):
     try:
         # 入力チェック
         try:
-            if len(code):
+            if len(code)!=4:
                 raise
             code = int(code)
         except:
