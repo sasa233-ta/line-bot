@@ -15,6 +15,26 @@ handler = WebhookHandler('e4322b2aca42c6689e252179cf3691cd')
 
 app = Flask(__name__)
 
+@app.route('/callback', methods=['POST'])
+def callback():
+    signature = request.headers['X-Line-Signature'] 
+    body = request.get_data(as_text=True)
+    app.logger.info(“Request body: ” + body)
+
+    try:
+        handler.handle(body, signature)
+    except InvalidSignatureError:
+        abort(400)
+
+    return 'OK'
+
+@handler.add(MessageEvent, message=TextMessage)
+def handle_message(event):
+    line_bot_api.reply_message(
+        event.reply_token,
+        TextSendMessage(text=pred.predict(event.message.text))
+    )
+
 @app.route('/')
 def index():
     my_dict = {
@@ -32,13 +52,6 @@ def sample_form():
         print('POSTデータ受け取ったので処理します。')
         message = pred.predict(request.form['data1'])
         return f'POST受け取ったよ: {message}'
-
-@handler.add(MessageEvent, message=TextMessage)
-def handle_message(event):
-    line_bot_api.reply_message(
-        event.reply_token,
-        TextSendMessage(text=pred.predict(event.message.text))
-    )
 
 if __name__ == "__main__":
     app.run(debug=True)

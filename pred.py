@@ -21,7 +21,9 @@ yf.pdr_override()
 def predict(code): 
     try:
         # 入力チェック
-        if not(isinstance(code, int) or len(code)!=4):
+        if not(isinstance(code, int)):
+            return "4桁の半角数字でお願いします。"
+        if len(code):
             return "4桁の半角数字でお願いします。"
 
         # 入力された値を取得
