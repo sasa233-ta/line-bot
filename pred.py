@@ -57,7 +57,6 @@ def predict(code):
         if not is_file:
             preprocess.mk_adddata(start,end)
         add_data = pd.read_pickle("./add_data/{}_add_data.pickle".format(end)) 
-        print(add_data)
 
         # 株の取得
         data_master = yf.download(tickers=stock_code, start=start,interval = "1d")
@@ -69,9 +68,9 @@ def predict(code):
         data_technical = pd.merge(data_technical, add_data, on="Date", how="inner")
         data_technical.index = pd.to_datetime(data_technical.index)
 
-        # 2018年〜2020年を学習用データとする
+        # 学習用データとする
         train = data_technical[start : '2022-05-31']
-        # 2021年をテストデータとする
+        # テストデータとする
         test = data_technical['2022-06-01' :]
 
         # 学習用データとテストデータそれぞれを説明変数と目的変数に分離する
@@ -85,21 +84,25 @@ def predict(code):
         model.fit(X_train, y_train)
         y_pred = model.predict(X_test)
 
+        score = np.sqrt(mse(y_test, y_pred))
+
         # 実際の予測結果確認
         df_result = test
         df_result['Close_pred'] = y_pred
 
         df_result['Pred_diff'] = df_result['Close_pred'].diff(1)
-        print(df_result[['Pred_diff','Close_pred']].tail(10))
-        print(df_result['Pred_diff'].tail(1))
-        if df_result['Pred_diff'].tolist().pop()>0 and df_result['Close_pred'].tolist().pop()>=0.25:
-            message = "期待大（参考値　pred:{}）".format(df_result['Close_pred'].tolist().pop())
-        elif df_result['Pred_diff'].tolist().pop()>0 and 0<df_result['Close_pred'].tolist().pop()<0.25:
-            message = "期待中（参考値　pred:{}）".format(df_result['Close_pred'].tolist().pop())
-        elif df_result['Pred_diff'].tolist().pop()<=0 and 0<df_result['Close_pred'].tolist().pop()<0.25:
-            message = "期待小（参考値　pred:{}）".format(df_result['Close_pred'].tolist().pop())
+        threshold = df_result['Pred_diff'].tolist().pop()
+        print(df_result[['Pred_diff','Close_pred']].tail(3))
+        print(score)
+        print(X_test.columns)
+        if threshold>0 and score < 0.3:
+            message = "期待大（参考値　Pred_diff:{}）".format(threshold)
+        elif threshold>0 and 0.3<=score < 0.4:
+            message = "期待中（参考値　Pred_diff:{}）".format(threshold)
+        elif threshold>0 and 0.4<=score<=0.5:
+            message = "期待小（参考値　Pred_diff:{}）".format(threshold)
         else:
-            message = "期待なし（参考値　pred:{}）".format(df_result['Close_pred'].tolist().pop())
+            message = "期待なし（参考値　Pred_diff:{}）".format(threshold)
 
         return message
     except Exception as e:

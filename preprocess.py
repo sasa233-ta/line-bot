@@ -12,7 +12,7 @@ import pandas_datareader.data as web
 yf.pdr_override()
 
 # add_column = ["USDJPY=X","^N225","^DJI","^GSPC","998405.T"]
-add_column = ["USDJPY=X","^N225","998405.T"]
+add_column = ["USDJPY=X","^N225","998405.T","1563.T","2516.T","1551.T"]
 
 # 移動平均を追加
 SMA1 = 3   #短期3日
@@ -23,6 +23,9 @@ def mk_adddata(start,end):
     i=0
     for val in add_column:
         temp = web.get_data_yahoo(val, start)
+        temp['SMA1']  = temp['Close'].rolling(SMA1).mean() 
+        temp['SMA2']  = temp['Close'].rolling(SMA2).mean() 
+        temp['SMA3']  = temp['Close'].rolling(SMA3).mean() 
         temp.drop('Volume', axis=1,inplace=True)
         temp = temp.add_prefix(val+"_")
         temp.dropna(inplace=True)
@@ -55,6 +58,7 @@ def stock_preprocess(df):
     # 目的変数となる翌日の終値Close_nextの追加
     df['Close_next'] = df['Close'].shift(-1)
     df['y_'] = 100*(df['Close_next']-df['Close'])/df['Close']
+    # 前日より2％以上上昇していれば1，していなければ0
     df['y'] = df['y_'].apply(lambda x:1 if x > 2 else 0)
 
     # 不要な目的変数削除
