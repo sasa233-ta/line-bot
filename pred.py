@@ -1,8 +1,6 @@
 # ライブラリのインポート
 import preprocess
 import os
-import re
-import random
 import datetime 
 import numpy as np
 import pandas as pd
