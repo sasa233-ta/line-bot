@@ -67,10 +67,10 @@ def sample_form():
 def recommend_form():
     dir = './recommend/'+TODAY
     if request.method == 'GET':
-        preprocess.get_recommend()
+        preprocess.get_recommend(dir)
 
     if request.method == 'POST':
-        preprocess.post_recommend(request)
+        preprocess.post_recommend(request,dir)
             
 if __name__ == "__main__":
     app.run(debug=True)

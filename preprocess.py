@@ -74,7 +74,7 @@ def stock_preprocess(df):
     df = df.fillna(method='bfill')
     return df
 
-def get_recommend():
+def get_recommend(dir):
     # 当日用のディレクトリの有無確認（なければ他のディレクトリ削除して当日のデイレク鳥作成し、フォーム画面に）
     if not os.path.exists(dir):
         shutil.rmtree('./recommend/')
@@ -86,7 +86,7 @@ def get_recommend():
         b = json.load(a)
         return f'おすすめ株: {b}'
 
-def post_recommend(request):
+def post_recommend(request,dir):
         if 'stocklist' not in request.files:
             flash('No file part')
             return redirect(request.url)
