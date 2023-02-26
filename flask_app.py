@@ -14,18 +14,12 @@ from linebot.exceptions import (
 from linebot.models import (
     MessageEvent, TextMessage, TextSendMessage, ImageMessage, ImageSendMessage
 )
-from werkzeug.utils import secure_filename
 
 line_bot_api = LineBotApi('6eB8eGyJKDMxFfhsZoppTbjc7B2aE441+u20PCqV2ASAuhKxLXek36HnCQnD5OL/xYle6oLj3mAe3ePBqS4IlLgweK1YIap1rejFjlFQZVcsXIYqfNFugjNOfFI5/0RmG5ovWbC28J5jxkWfh7qf4AdB04t89/1O/w1cDnyilFU=')
 handler = WebhookHandler('e4322b2aca42c6689e252179cf3691cd')
-ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'json'}
 TODAY = str(datetime.date.today())
 
 app = Flask(__name__)
-
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @app.route('/callback', methods=['POST'])
 def callback():
@@ -65,12 +59,20 @@ def sample_form():
 
 @app.route('/recommend', methods=['GET', 'POST'])
 def recommend_form():
-    dir = './recommend/'+TODAY
+    dir = './recommend/'+ TODAY
     if request.method == 'GET':
-        preprocess.get_recommend(dir)
+        result = preprocess.get_recommend(dir)
+        if result == 0:
+            return render_template('recommend.html')
+        else :
+            return f'おすすめ株: {result}'
 
     if request.method == 'POST':
-        preprocess.post_recommend(request,dir)
-            
+        result = preprocess.post_recommend(request,dir)   
+        if result == 0:
+            return redirect(request.url)
+        else:
+            return redirect('/recommend')
+
 if __name__ == "__main__":
     app.run(debug=True)

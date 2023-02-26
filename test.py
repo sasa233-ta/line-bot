@@ -50,4 +50,11 @@ with open(".././line_bot_local_files/recommend.json", mode="wt", encoding="utf-8
 	json.dump(arr, f, ensure_ascii=False, indent=2)
 
 driver = webdriver.Chrome(ChromeDriverManager().install())
-driver.get()
+# driver.get("http://127.0.0.1:5000/recommend")
+driver.get("https://sassa2imo.pythonanywhere.com/recommend")
+driver.find_element_by_name('stocklist').send_keys('D:/python/line_bot_local_files/recommend.json')
+driver.find_element_by_id('upload').click()
+
+driver.close()
+driver.quit()
+exit() 

@@ -12,11 +12,18 @@ import pred
 import json
 import shutil
 import pandas_datareader.data as web
+from werkzeug.utils import secure_filename
 
 yf.pdr_override()
 
 # add_column = ["USDJPY=X","^N225","^DJI","^GSPC","998405.T"]
 add_column = ["USDJPY=X","^N225","998405.T","1563.T","2516.T","1551.T"]
+
+ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'json'}
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 # 移動平均を追加
 SMA1 = 3   #短期3日
@@ -79,22 +86,25 @@ def get_recommend(dir):
     if not os.path.exists(dir):
         shutil.rmtree('./recommend')
         os.makedirs(dir)
-        return render_template('recommend.html')
+        return 0
     # 当日用のディレクトリがある場合は推奨株のファイルあるはずなので表示
     else:
-        a = open(dir+'/recommend.json','r', encoding="utf-8")
-        b = json.load(a)
-        return f'おすすめ株: {b}'
+        if os.path.isfile(dir+'/recommend.json'):
+            a = open(dir+'/recommend.json','r', encoding="utf-8")
+            b = json.load(a)
+            return f'おすすめ株: {b}'
+        else :
+            return 0
 
 def post_recommend(request,dir):
         if 'stocklist' not in request.files:
             flash('No file part')
-            return redirect(request.url)
+            return 0
         file = request.files['stocklist']
         if file.filename == '':
             flash('No selected file')
-            return redirect(request.url)
+            return 0
         if file and allowed_file(file.filename):        
             filename = secure_filename(file.filename)
             file.save(os.path.join(dir ,filename))
-            return redirect('/recommend')
+            return 1
