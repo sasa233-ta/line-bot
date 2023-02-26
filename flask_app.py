@@ -14,12 +14,12 @@ from linebot.models import (
     MessageEvent, TextMessage, TextSendMessage, ImageMessage, ImageSendMessage
 )
 
-line_bot_api = LineBotApi('6eB8eGyJKDMxFfhsZoppTbjc7B2aE441+u20PCqV2ASAuhKxLXek36HnCQnD5OL/xYle6oLj3mAe3ePBqS4IlLgweK1YIap1rejFjlFQZVcsXIYqfNFugjNOfFI5/0RmG5ovWbC28J5jxkWfh7qf4AdB04t89/1O/w1cDnyilFU=')
-handler = WebhookHandler('e4322b2aca42c6689e252179cf3691cd')
-TODAY = str(datetime.date.today())
 os.environ["TZ"] = "Asia/Tokyo"
 time.tzset()
 
+line_bot_api = LineBotApi('6eB8eGyJKDMxFfhsZoppTbjc7B2aE441+u20PCqV2ASAuhKxLXek36HnCQnD5OL/xYle6oLj3mAe3ePBqS4IlLgweK1YIap1rejFjlFQZVcsXIYqfNFugjNOfFI5/0RmG5ovWbC28J5jxkWfh7qf4AdB04t89/1O/w1cDnyilFU=')
+handler = WebhookHandler('e4322b2aca42c6689e252179cf3691cd')
+TODAY = str(datetime.date.today())
 
 app = Flask(__name__)
 
