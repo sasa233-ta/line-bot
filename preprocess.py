@@ -77,7 +77,7 @@ def stock_preprocess(df):
 def get_recommend(dir):
     # 当日用のディレクトリの有無確認（なければ他のディレクトリ削除して当日のデイレク鳥作成し、フォーム画面に）
     if not os.path.exists(dir):
-        shutil.rmtree('./recommend/')
+        shutil.rmtree('./recommend')
         os.makedirs(dir)
         return render_template('recommend.html')
     # 当日用のディレクトリがある場合は推奨株のファイルあるはずなので表示
