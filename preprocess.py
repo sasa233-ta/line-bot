@@ -6,7 +6,11 @@ import pandas as pd
 from pandas_datareader import data
 # import matplotlib.pyplot as plt
 import yfinance as yf
-
+from flask import Flask,render_template,request,flash,redirect
+import os
+import pred
+import json
+import shutil
 import pandas_datareader.data as web
 
 yf.pdr_override()
@@ -70,4 +74,27 @@ def stock_preprocess(df):
     df = df.fillna(method='bfill')
     return df
 
+def get_recommend():
+    # 当日用のディレクトリの有無確認（なければ他のディレクトリ削除して当日のデイレク鳥作成し、フォーム画面に）
+    if not os.path.exists(dir):
+        shutil.rmtree('./recommend/')
+        os.makedirs(dir)
+        return render_template('recommend.html')
+    # 当日用のディレクトリがある場合は推奨株のファイルあるはずなので表示
+    else:
+        a = open(dir+'/recommend.json','r', encoding="utf-8")
+        b = json.load(a)
+        return f'おすすめ株: {b}'
 
+def post_recommend(request):
+        if 'stocklist' not in request.files:
+            flash('No file part')
+            return redirect(request.url)
+        file = request.files['stocklist']
+        if file.filename == '':
+            flash('No selected file')
+            return redirect(request.url)
+        if file and allowed_file(file.filename):        
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(dir ,filename))
+            return redirect('/recommend')

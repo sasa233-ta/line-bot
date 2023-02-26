@@ -16,13 +16,25 @@ from sklearn.metrics import mean_squared_error as mse
 from sklearn.model_selection import TimeSeriesSplit
 yf.pdr_override()
 
+def classify(rank,threshold):
+    if rank == 1:
+        message = "期待大（参考値　Pred_diff:{}）".format(threshold)
+    elif rank == 2:
+        message = "期待中（参考値　Pred_diff:{}）".format(threshold)
+    elif rank == 3:
+        message = "期待小（参考値　Pred_diff:{}）".format(threshold)
+    else:
+            message = "期待なし（参考値　Pred_diff:{}）".format(threshold)   
+    return message
+
 def predict(code): 
     try:
         # 入力チェック
         try:
             if len(code)!=4:
                 raise
-            code = int(code)
+            if not isinstance(code, int):
+                code = int(code)
         except:
             return "4桁の半角数字でお願いします。"
 
@@ -91,18 +103,16 @@ def predict(code):
         df_result['Pred_diff'] = df_result['Close_pred'].diff(1)
         threshold = df_result['Pred_diff'].tolist().pop()
         print(df_result[['Pred_diff','Close_pred']].tail(3))
-        print(score)
-        print(X_test.columns)
-        if threshold>0 and score < 0.3:
-            message = "期待大（参考値　Pred_diff:{}）".format(threshold)
-        elif threshold>0 and 0.3<=score < 0.4:
-            message = "期待中（参考値　Pred_diff:{}）".format(threshold)
-        elif threshold>0 and 0.4<=score<=0.5:
-            message = "期待小（参考値　Pred_diff:{}）".format(threshold)
-        else:
-            message = "期待なし（参考値　Pred_diff:{}）".format(threshold)
 
-        return message
+        if threshold>0 and score < 0.3:
+            rank = 1 
+        elif threshold>0 and 0.3<=score < 0.4:
+            rank = 2
+        elif threshold>0 and 0.4<=score<=0.5:
+            rank = 3
+        else:
+            rank = 4
+        return rank,threshold
     except Exception as e:
         return "企業コードを確認してください"
 

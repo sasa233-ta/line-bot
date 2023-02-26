@@ -66,28 +66,10 @@ def sample_form():
 def recommend_form():
     dir = './recommend/'+TODAY
     if request.method == 'GET':
-        # 当日用のディレクトリの有無確認（なければ他のディレクトリ削除して当日のデイレク鳥作成し、フォーム画面に）
-        if not os.path.exists(dir):
-            shutil.rmtree('./recommend/')
-            os.makedirs(dir)
-            return render_template('recommend.html')
-        # 当日用のディレクトリがある場合は推奨株のファイルあるはずなので表示
-        else:
-            a = open(dir+'/recommend.json','r', encoding="utf-8")
-            b = json.load(a)
-            return f'おすすめ株: {b}'
+        preprocess.get_recommend()
 
     if request.method == 'POST':
-        if 'stocklist' not in request.files:
-            flash('No file part')
-            return redirect(request.url)
-        file = request.files['stocklist']
-        if file.filename == '':
-            flash('No selected file')
-            return redirect(request.url)
-        if file and allowed_file(file.filename):        
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(dir ,filename))
-            return redirect('/recommend')
+        preprocess.post_recommend(request)
+            
 if __name__ == "__main__":
     app.run(debug=True)
