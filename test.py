@@ -1,22 +1,11 @@
 # ライブラリのインポート
-import preprocess
 import pred
-import os
 import random
 import datetime 
-import numpy as np
 import pandas as pd
-from pandas_datareader import data
-import pandas_datareader.data as web
-# import matplotlib.pyplot as plt
-import yfinance as yf
-from sklearn.model_selection import train_test_split
-# 線形回帰モデルのLinearRegressionをインポート
-from sklearn.linear_model import LinearRegression
-from sklearn.metrics import mean_squared_error as mse
-# 時系列分割のためTimeSeriesSplitのインポート
-from sklearn.model_selection import TimeSeriesSplit
-yf.pdr_override()
+import json
+from selenium import webdriver
+from webdriver_manager.chrome import ChromeDriverManager
 
 # いくつの株を予測するか(最大50くらいでお願い)
 k = 10
@@ -39,7 +28,7 @@ elif dt_now.hour<20 and 0<dt_now.weekday()<5:
     end = end + datetime.timedelta(days=-1)
 
 # 予測する証券コードを準備
-stocks = pd.read_excel(".././finance/stock_data/{}_割安株.xlsx".format(end))
+stocks = pd.read_excel(".././line_bot_local_files/stock_data/{}_割安株.xlsx".format(end))
 
 stocks = stocks[stocks["過去3年平均売上高成長率(予)(%)"] > 5]
 stock_list = stocks["コード ▲"].dropna().tolist()
@@ -57,4 +46,8 @@ for stock_code in stock_list:
         val_arr['threshold']= rank[1]
         arr[stock_code]=val_arr
 
-print(arr)
+with open(".././line_bot_local_files/recommend.json", mode="wt", encoding="utf-8") as f:
+	json.dump(arr, f, ensure_ascii=False, indent=2)
+
+driver = webdriver.Chrome(ChromeDriverManager().install())
+driver.get()

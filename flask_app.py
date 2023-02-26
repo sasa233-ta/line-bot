@@ -2,6 +2,7 @@ from flask import Flask,render_template,request,flash,redirect
 import os
 import pred
 import datetime 
+import preprocess
 import json
 import shutil
 from linebot import (
