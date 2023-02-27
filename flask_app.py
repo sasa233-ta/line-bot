@@ -40,7 +40,7 @@ def handle_message(event):
     message = pred.classify(rank,threshold)
     line_bot_api.reply_message(
         event.reply_token,
-        TextSendMessage(text=pred.predict(event.message.text))
+        TextSendMessage(text=message)
     )
 
 @app.route('/')
