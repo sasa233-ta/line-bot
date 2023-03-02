@@ -61,13 +61,15 @@ def sample_form():
 
 @app.route('/recommend', methods=['GET', 'POST'])
 def recommend_form():
+    recommend_dict = {}
     dir = './recommend/'+ TODAY
     if request.method == 'GET':
         result = preprocess.get_recommend(dir)
         if result == 0:
-            return render_template('recommend.html')
+            return render_template('recommend.html', recommend_dict=recommend_dict)
         else :
-            return f'おすすめ株: {result}'
+            return render_template('recommend.html', recommend_dict=result)
+            
 
     if request.method == 'POST':
         result = preprocess.post_recommend(request,dir)   

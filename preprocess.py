@@ -91,8 +91,8 @@ def get_recommend(dir):
     else:
         if os.path.isfile(dir+'/recommend.json'):
             a = open(dir+'/recommend.json','r', encoding="utf-8")
-            b = json.load(a)
-            return f'おすすめ株: {b}'
+            b = json.load(a)           
+            return b
         else :
             return 0
 

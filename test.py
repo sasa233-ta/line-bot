@@ -8,7 +8,7 @@ from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 
 # いくつの株を予測するか(最大50くらいでお願い)
-k = 10
+k = 20
 
 # 本日の日時を取得
 dt_now = datetime.datetime.now()

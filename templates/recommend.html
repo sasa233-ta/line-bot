@@ -3,14 +3,38 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>アップロードページ</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>リコメンドページ</title>
 </head>
 <body>
+{% if recommend_dict %}
+    <h1>おすすめリストです。</h1>
+    <table>
+        <thead>
+          <tr>
+            <th>code</th>
+            <th>rank</th>
+            <th>up_rate</th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for stock,item in recommend_dict.items() %}
+          <tr>
+            <td>{{ stock }}</td>
+            <td>{{ item["rank"] }}</td>
+            <td>{{ item["threshold"] }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+{% else %}
     <h1>サンプルフォームです。</h1>
     <form action="/recommend" method="POST" enctype="multipart/form-data">
         <input type="file" name="stocklist">
         <input type="submit" value="アップロード" id=upload>
     </form>
+{% endif %}
 </body>
+
 </html>
 </html>
