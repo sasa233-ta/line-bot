@@ -17,7 +17,7 @@ from werkzeug.utils import secure_filename
 yf.pdr_override()
 
 # add_column = ["USDJPY=X","^N225","^DJI","^GSPC","998405.T"]
-add_column = ["USDJPY=X","^N225","998405.T","1563.T","2516.T","1551.T"]
+add_column = ["USDJPY=X","^N225","998405.T","1563.T","2516.T","1551.T","^IXIC","^DJI"]
 
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'json'}
 
