@@ -1,5 +1,7 @@
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.microsoft import EdgeChromiumDriverManager
+from msedge.selenium_tools import EdgeOptions, Edge
 import pandas as pd
 import time
 import datetime as dt
@@ -30,11 +32,18 @@ url = lines[0]
 rak_id = lines[1]
 rak_pass = lines[2]
 
-options = webdriver.chrome.options.Options()
+# options = webdriver.chrome.options.Options()
+# profile_path = 'C:\\Users\\sassa\\AppData\\Local\\Google\\Chrome\\User Data\\Default'
+# options.add_argument('--user-data-dir=' + profile_path)
+options = EdgeOptions()
+options.use_chromium = True
+options.add_argument('disable-web-security')
 profile_path = 'C:\\Users\\sassa\\AppData\\Local\\Google\\Chrome\\User Data\\Default'
 options.add_argument('--user-data-dir=' + profile_path)
 
-driver = webdriver.Chrome(ChromeDriverManager().install())
+driver = Edge(executable_path = EdgeChromiumDriverManager().install(),
+                service_args = ['--log-level=ALL'],
+                options = options)
 driver.get(url)
 
 driver.find_element_by_id('form-login-pass').send_keys(rak_pass)
